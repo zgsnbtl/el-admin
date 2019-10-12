@@ -5,11 +5,11 @@
         <li v-for="n in 10" :key="n"></li>
       </ul>
     </div>
-    <div
+    <!-- <div
       class="page-login--layer page-login--layer-time"
       flex="main:center cross:center">
       {{time}}
-    </div>
+    </div> -->
     <div class="page-login--layer">
       <div
         class="page-login--content"
@@ -23,7 +23,7 @@
           class="page-login--content-main"
           flex="dir:top main:center cross:center">
           <!-- logo -->
-          <img class="page-login--logo" src="./image/logo@2x.png">
+          <!-- <img class="page-login--logo" src="./image/logo@2x.png"> -->
           <!-- 表单 -->
           <div class="page-login--form">
             <el-card shadow="never">
@@ -39,26 +39,26 @@
                   </el-input>
                 </el-form-item>
                 <el-form-item prop="code">
-                  <el-input type="text" v-model="formLogin.code" placeholder="- - - -">
+                  <!-- <el-input type="text" v-model="formLogin.code" placeholder="- - - -">
                     <template slot="prepend">验证码</template>
                     <template slot="append">
                       <img class="login-code" src="./image/login-code.png">
                     </template>
-                  </el-input>
+                  </el-input> -->
                 </el-form-item>
                 <el-button size="default" @click="submit" type="primary" class="button-login">登录</el-button>
               </el-form>
             </el-card>
-            <p
+            <!-- <p
               class="page-login--options"
               flex="main:justify cross:center">
               <span><d2-icon name="question-circle"/> 忘记密码</span>
               <span>注册用户</span>
-            </p>
+            </p> -->
             <!-- 快速登录按钮 -->
-            <el-button class="page-login--quick" size="default" type="info" @click="dialogVisible = true">
+            <!-- <el-button class="page-login--quick" size="default" type="info" @click="dialogVisible = true">
               快速选择用户（测试功能）
-            </el-button>
+            </el-button> -->
           </div>
         </div>
         <div class="page-login--content-footer">
@@ -73,7 +73,7 @@
         </div>
       </div>
     </div>
-    <el-dialog
+    <!-- <el-dialog
       title="快速选择用户"
       :visible.sync="dialogVisible"
       width="400px">
@@ -85,41 +85,24 @@
           </div>
         </el-col>
       </el-row>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
 <script>
 import dayjs from 'dayjs'
 import { mapActions } from 'vuex'
+import {getlander} from '../../../api/http'
 export default {
   data () {
     return {
       timeInterval: null,
       time: dayjs().format('HH:mm:ss'),
       // 快速选择用户
-      dialogVisible: false,
-      users: [
-        {
-          name: '管理员',
-          username: 'admin',
-          password: 'admin'
-        },
-        {
-          name: '编辑',
-          username: 'editor',
-          password: 'editor'
-        },
-        {
-          name: '用户1',
-          username: 'user1',
-          password: 'user1'
-        }
-      ],
       // 表单
       formLogin: {
-        username: 'admin',
-        password: 'admin',
+        username: '',
+        password: '',
         code: 'v9am'
       },
       // 校验
@@ -137,29 +120,20 @@ export default {
     }
   },
   mounted () {
-    this.timeInterval = setInterval(() => {
-      this.refreshTime()
-    }, 1000)
+    // this.timeInterval = setInterval(() => {
+    //   this.refreshTime()
+    // }, 1000)
   },
   beforeDestroy () {
-    clearInterval(this.timeInterval)
+    // clearInterval(this.timeInterval)
   },
   methods: {
     ...mapActions('d2admin/account', [
       'login'
     ]),
-    refreshTime () {
-      this.time = dayjs().format('HH:mm:ss')
-    },
-    /**
-     * @description 接收选择一个用户快速登录的事件
-     * @param {Object} user 用户信息
-     */
-    handleUserBtnClick (user) {
-      this.formLogin.username = user.username
-      this.formLogin.password = user.password
-      this.submit()
-    },
+    // refreshTime () {
+    //   this.time = dayjs().format('HH:mm:ss')
+    // },
     /**
      * @description 提交表单
      */
@@ -172,10 +146,11 @@ export default {
           // 具体需要传递的数据请自行修改代码
           this.login({
             name: this.formLogin.username,
-            pass: this.formLogin.password
+            pwd: this.formLogin.password
           })
             .then(() => {
               // 重定向对象不存在则返回顶层路径
+              this.lander()
               this.$router.replace(this.$route.query.redirect || '/')
             })
         } else {
@@ -183,7 +158,13 @@ export default {
           this.$message.error('表单校验失败')
         }
       })
-    }
+    },
+    lander () {
+      getlander().then(res=>{
+        console.log(111212,res.arr)
+        this.$store.commit('d2admin/menu/asideSet', res.arr)
+      })
+    },
   }
 }
 </script>

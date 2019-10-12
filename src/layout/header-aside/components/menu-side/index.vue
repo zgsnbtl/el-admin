@@ -69,6 +69,7 @@ export default {
   },
   mounted () {
     this.scrollInit()
+    console.log(this.aside)
   },
   beforeDestroy () {
     this.scrollDestroy()

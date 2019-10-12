@@ -13,9 +13,32 @@ import router from './router'
 import menuHeader from '@/menu/header'
 import menuAside from '@/menu/aside'
 import { frameInRoutes } from '@/router/routes'
-
+// fwb
+import quillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+Vue.use(quillEditor)
 // 核心插件
 Vue.use(d2Admin)
+// router.beforeEach((to,from,next)=>{
+// 	let flag = to.matched.some(record=>record.meta.requireAuth);
+//   console.log(flag); 
+// })
+import {getlander} from './api/http'
+// var menulist = []
+// function lander () {
+//   getlander().then(res=>{
+//     console.log(222,res.arr)
+//     menulist = res.arr
+//   })
+//   return menulist
+// }
+// console.log(11,menulist)
+// let arrs =  lander()
+// console.log(1111,arrs)
+
+
 Vue.prototype.$axios = axios
 new Vue({
   router,
@@ -23,12 +46,16 @@ new Vue({
   i18n,
   render: h => h(App),
   created () {
+    getlander().then(res=>{
+      console.log('aaaaaa',res.arr)
+      this.$store.commit('d2admin/menu/asideSet', res.arr)
+    })
     // 处理路由 得到每一级的路由设置
     this.$store.commit('d2admin/page/init', frameInRoutes)
     // 设置顶栏菜单
-    this.$store.commit('d2admin/menu/headerSet', menuHeader)
+    // this.$store.commit('d2admin/menu/headerSet', menuHeader)
     // 设置侧边栏菜单
-    this.$store.commit('d2admin/menu/asideSet', menuAside)
+    // this.$store.commit('d2admin/menu/asideSet', menuAside)
     // 初始化菜单搜索功能
     this.$store.commit('d2admin/search/init', menuHeader)
   },
@@ -41,5 +68,5 @@ new Vue({
     this.$store.commit('d2admin/ua/get')
     // 初始化全屏监听
     this.$store.dispatch('d2admin/fullscreen/listen')
-  }
+  },
 }).$mount('#app')
